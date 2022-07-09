@@ -8,6 +8,10 @@ import express, {
 import { Server } from "http";
 import createHttpError from "http-errors";
 import { config } from "dotenv";
+import {
+  createHttpErrorHandler,
+  errorHandler,
+} from "./middlewares/middlewares";
 config();
 
 const app: Application = express();
@@ -19,15 +23,7 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
   res.send(initialMsg);
 });
 
-app.use((req: Request, res: Response, next: NextFunction) => {
-  next(new createHttpError.NotFound());
-});
-
-const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-  res
-    .status(err.status || 500)
-    .send({ status: err.status, message: err.message });
-};
+app.use(createHttpErrorHandler);
 app.use(errorHandler);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
