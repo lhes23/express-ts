@@ -1,31 +1,19 @@
-import express, {
-  Application,
-  NextFunction,
-  Request,
-  Response,
-  ErrorRequestHandler,
-} from "express";
-import { Server } from "http";
-import createHttpError from "http-errors";
+import express, { Application } from "express";
 import { config } from "dotenv";
 import {
   createHttpErrorHandler,
   errorHandler,
 } from "./middlewares/middlewares";
 config();
+import router from "./routes";
 
 const app: Application = express();
 
-const port: number = Number(process.env.PORT) || 4000;
-const initialMsg = `Server running on port: ${port}`;
-
-app.get("/", (req: Request, res: Response, next: NextFunction) => {
-  res.send(initialMsg);
-});
-
+app.use("/", router);
 app.use(createHttpErrorHandler);
 app.use(errorHandler);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const server: Server = app.listen(port, () => console.log(initialMsg));
+const port: number = Number(process.env.PORT) || 4000;
+app.listen(port, () => console.log(`Server Running on port: ${port}`));
