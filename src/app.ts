@@ -1,16 +1,13 @@
 import express, { Application } from "express";
 import { config } from "dotenv";
-import {
-  createHttpErrorHandler,
-  errorHandler,
-} from "./middlewares/middlewares";
-config();
+import { httpErrorHandler, errorHandler } from "./middlewares/middlewares";
 import router from "./routes";
 
+config();
 const app: Application = express();
 
 app.use("/", router);
-app.use(createHttpErrorHandler);
+app.use(httpErrorHandler);
 app.use(errorHandler);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
